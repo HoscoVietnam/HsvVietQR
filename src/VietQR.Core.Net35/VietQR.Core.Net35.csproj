@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <RootNamespace>VietQR.Core</RootNamespace>
+    <AssemblyName>VietQR.Core.Net35</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <Deterministic>true</Deterministic>
+    <IsPackable>false</IsPackable>
+    <Title>VietQR.Core.Net35 - Thư viện tạo mã VietQR cho .NET Framework 3.5 (WinForms)</Title>
+    <Version>1.0.1</Version>
+    <Authors>Hien Dev</Authors>
+    <Company>Ngochiendev</Company>
+    <Description>Thư viện C# (.NET Framework 3.5) độc lập (Zero-Dependency) hỗ trợ tạo chuỗi, phân tích mã QR và render ảnh thẻ thanh toán VietQR (Bitmap / PNG / JPEG / BMP / SVG) cho ứng dụng WinForms.</Description>
+    <_EnableDefaultWindowsPlatform>false</_EnableDefaultWindowsPlatform>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <TargetPlatformDisplayName>Windows</TargetPlatformDisplayName>
+    <FrameworkPathOverride Condition="'$(FrameworkPathOverride)' == '' and Exists('C:\Windows\Microsoft.NET\Framework\v2.0.50727')">C:\Windows\Microsoft.NET\Framework\v2.0.50727</FrameworkPathOverride>
+    <AssemblySearchPaths Condition="Exists('C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5')">C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5;C:\Windows\Microsoft.NET\Framework\v2.0.50727;{HintPathFromItem};{TargetFrameworkDirectory};{RawFileName}</AssemblySearchPaths>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\VietQR.Core\Resources\vietqr.png" LogicalName="VietQR.Core.Resources.vietqr.png" />
+    <EmbeddedResource Include="..\VietQR.Core\Resources\vietqr_icon.png" LogicalName="VietQR.Core.Resources.vietqr_icon.png" />
+    <EmbeddedResource Include="..\VietQR.Core\Resources\napas247.png" LogicalName="VietQR.Core.Resources.napas247.png" />
+    <EmbeddedResource Include="..\VietQR.Core\Resources\banks.json" LogicalName="VietQR.Core.Resources.banks.json" />
+    <EmbeddedResource Include="..\VietQR.Core\Resources\logos\*.png" LogicalName="VietQR.Core.Resources.logos.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\VietQR.Core\Resources\fonts\*.ttf" LogicalName="VietQR.Core.Resources.fonts.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

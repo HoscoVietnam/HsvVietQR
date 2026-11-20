@@ -47,7 +47,7 @@ namespace VietQR.Core
         /// <summary>Sub-tag 05: Mã đơn hàng / mã tham chiếu giao dịch (Reference Label - tối đa 25 ký tự).</summary>
         public string ReferenceLabel { get; set; }
 
-        /// <summary>Sub-tag 08: Mục đích giao dịch / Nội dung chuyển khoản (Purpose of Transaction - tối đa 25 ký tự).</summary>
+        /// <summary>Sub-tag 08: Mục đích giao dịch / Nội dung chuyển khoản (Purpose of Transaction - tối đa 95 byte trong khung 99 byte của Tag 62).</summary>
         public string Purpose { get; set; }
     }
 
@@ -72,13 +72,14 @@ namespace VietQR.Core
         public TlvBuilder Add(string tag, string value)
         {
             if (string.IsNullOrEmpty(value)) return this;
-            if (value.Length > 99)
+            int byteLength = Encoding.UTF8.GetByteCount(value);
+            if (byteLength > 99)
             {
-                throw new ArgumentOutOfRangeException("value", string.Format("TLV tag {0} vượt 99 ký tự.", tag));
+                throw new ArgumentOutOfRangeException("value", string.Format("TLV tag {0} vượt 99 byte UTF-8.", tag));
             }
 
             _buffer.Append(tag)
-                   .Append(TwoDigitLookup[value.Length])
+                   .Append(TwoDigitLookup[byteLength])
                    .Append(value);
             return this;
         }
@@ -345,7 +346,12 @@ namespace VietQR.Core
         public static string ConvertLength(int length)
         {
             if ((uint)length < 100u) return TwoDigitLookup[length];
-            throw new ArgumentOutOfRangeException("length", string.Format("Độ dài trường TLV ({0}) vượt quá giới hạn tối đa 99 ký tự của chuẩn EMVCo/NAPAS.", length));
+            throw new ArgumentOutOfRangeException("length", string.Format("Độ dài trường TLV ({0}) vượt quá giới hạn tối đa 99 byte của chuẩn EMVCo/NAPAS.", length));
+        }
+
+        private static string ConvertByteLength(string value)
+        {
+            return ConvertLength(Encoding.UTF8.GetByteCount(value));
         }
 
         public static string RemoveDiacritics(string text)
@@ -382,7 +388,7 @@ namespace VietQR.Core
             }
 
             string clean = val.ToString(CultureInfo.InvariantCulture);
-            string length = ConvertLength(clean.Length);
+            string length = ConvertByteLength(clean);
             _transactionAmount = string.Concat("54", length, clean);
 
             if (!_manualMethodOverride) _pointOfInitiationMethod = MethodDynamic;
@@ -410,22 +416,22 @@ namespace VietQR.Core
                 }
             }
 
-            if (string.IsNullOrEmpty(consumerTrimmed) || consumerTrimmed.Length > 25)
+            if (string.IsNullOrEmpty(consumerTrimmed) || Encoding.UTF8.GetByteCount(consumerTrimmed) > 25)
             {
                 throw new ArgumentException(
                     string.Format("Số tài khoản/thẻ (consumerId / accountNo) không được rỗng và tối đa 25 ký tự theo chuẩn NAPAS / Virtual Account (nhận được: {0} ký tự).", consumerTrimmed.Length),
                     "consumerId");
             }
 
-            string sub00 = string.Concat("00", ConvertLength(acquirerTrimmed.Length), acquirerTrimmed);
-            string sub01 = string.Concat("01", ConvertLength(consumerTrimmed.Length), consumerTrimmed);
+            string sub00 = string.Concat("00", ConvertByteLength(acquirerTrimmed), acquirerTrimmed);
+            string sub01 = string.Concat("01", ConvertByteLength(consumerTrimmed), consumerTrimmed);
             string sub01Total = string.Concat(sub00, sub01);
 
-            string beneficiaryOrg = string.Concat("01", ConvertLength(sub01Total.Length), sub01Total);
+            string beneficiaryOrg = string.Concat("01", ConvertByteLength(sub01Total), sub01Total);
             string serviceCode = serviceType == VietQrServiceType.Card ? ServiceCodeCard : ServiceCodeAccount;
 
             string tag38Value = string.Concat(NapasAid, beneficiaryOrg, serviceCode);
-            _consumerAccountInformation = string.Concat("38", ConvertLength(tag38Value.Length), tag38Value);
+            _consumerAccountInformation = string.Concat("38", ConvertByteLength(tag38Value), tag38Value);
             return this;
         }
 
@@ -459,12 +465,12 @@ namespace VietQR.Core
                 if (!_manualMethodOverride) _pointOfInitiationMethod = MethodDynamic;
             }
 
-            // Sub-tag 08: Purpose of Transaction (Nội dung CK - hỗ trợ tới 95 ký tự trong khung 99 ký tự của Tag 62)
+            // Sub-tag 08: Purpose of Transaction (Nội dung CK - hỗ trợ tới 95 byte trong khung 99 byte của Tag 62)
             AppendSubTag(innerSb, "08", purpose, 95);
 
             string inner = innerSb.ToString();
             _additionalDataFieldTemplate = inner.Length > 0
-                ? string.Concat("62", ConvertLength(inner.Length), inner)
+                ? string.Concat("62", ConvertByteLength(inner), inner)
                 : string.Empty;
             return this;
         }
@@ -473,11 +479,17 @@ namespace VietQR.Core
         {
             if (VietQrPayload.IsNullOrWhiteSpace(val)) return;
             string clean = RemoveDiacritics(val.Trim());
-            int remainingSpace = 99 - innerSb.Length - 4;
+            int currentBytes = Encoding.UTF8.GetByteCount(innerSb.ToString());
+            int remainingSpace = 99 - currentBytes - 4;
             if (remainingSpace <= 0) return;
             int limit = Math.Min(maxLen, remainingSpace);
             if (clean.Length > limit) clean = clean.Substring(0, limit);
-            innerSb.Append(id).Append(ConvertLength(clean.Length)).Append(clean);
+            while (Encoding.UTF8.GetByteCount(clean) > limit && clean.Length > 0)
+            {
+                clean = clean.Substring(0, clean.Length - 1);
+            }
+            if (clean.Length == 0) return;
+            innerSb.Append(id).Append(ConvertByteLength(clean)).Append(clean);
         }
 
         public VietQr SetMerchantInfo(string name, string city = "HANOI")
@@ -486,7 +498,7 @@ namespace VietQR.Core
             {
                 string n = RemoveDiacritics(name.Trim()).ToUpperInvariant();
                 if (n.Length > 25) n = n.Substring(0, 25);
-                _merchantName = string.Concat("59", ConvertLength(n.Length), n);
+                _merchantName = string.Concat("59", ConvertByteLength(n), n);
             }
             else
             {
@@ -497,7 +509,7 @@ namespace VietQR.Core
             {
                 string c = RemoveDiacritics(city.Trim()).ToUpperInvariant();
                 if (c.Length > 15) c = c.Substring(0, 15);
-                _merchantCity = string.Concat("60", ConvertLength(c.Length), c);
+                _merchantCity = string.Concat("60", ConvertByteLength(c), c);
             }
             else
             {

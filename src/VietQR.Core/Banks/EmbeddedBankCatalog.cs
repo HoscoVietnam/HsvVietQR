@@ -47,10 +47,60 @@ public sealed class EmbeddedBankCatalog : IBankCatalog
                     if (!string.IsNullOrEmpty(shortName)) _byCode[shortName] = info;
                 }
             }
+
+            RegisterCommonAliases();
         }
         catch
         {
             // Bỏ qua lỗi nếu resource chưa sẵn sàng
+        }
+    }
+
+    private void RegisterCommonAliases()
+    {
+        string[,] aliases =
+        {
+            { "970422", "MBBANK" }, { "970422", "QUANDOI" },
+            { "970436", "VIETCOMBANK" }, { "970436", "VCBDIGIBANK" },
+            { "970415", "VIETINBANK" }, { "970415", "CTG" }, { "970415", "IPAY" },
+            { "970418", "BIDVSMARTBANKING" },
+            { "970405", "AGRIBANK" }, { "970405", "VARB" },
+            { "970407", "TECHCOMBANK" },
+            { "970416", "ACBONE" },
+            { "970432", "VPBANK" }, { "970432", "VPBANKNEO" },
+            { "970423", "TPBANK" },
+            { "970403", "SACOMBANK" },
+            { "970437", "HDBANK" },
+            { "970449", "LPBANK" }, { "970449", "LIENVIETPOSTBANK" }, { "970449", "LVB" },
+            { "970448", "OCBOMNI" },
+            { "970440", "SEABANK" },
+            { "970431", "EXIMBANK" },
+            { "970425", "ABBANK" },
+            { "970412", "PVCOMBANK" },
+            { "970428", "NAMABANK" },
+            { "970454", "BVBANK" }, { "970454", "VIETCAPITALBANK" }, { "970454", "DIGIMI" },
+            { "970409", "BACABANK" },
+            { "970452", "KIENLONGBANK" },
+            { "970438", "BAOVIETBANK" },
+            { "970400", "SAIGONBANK" },
+            { "970424", "SHINHANBANK" }, { "970424", "SHINHAN" },
+            { "970457", "WOORIBANK" }, { "970457", "WOORI" },
+            { "970439", "PUBLICBANK" },
+            { "971005", "VIETTELMONEY" }, { "971005", "VIETTELPAY" },
+            { "971011", "VNPTPAY" }, { "971011", "VNPTMONEY" },
+            { "971025", "VIMOMO" },
+            { "971101", "VIZALOPAY" }, { "971101", "ZLP" }
+        };
+
+        int count = aliases.GetLength(0);
+        for (int i = 0; i < count; i++)
+        {
+            var bin = aliases[i, 0];
+            var alias = aliases[i, 1];
+            if (_byBin.TryGetValue(bin, out var info) && !_byCode.ContainsKey(alias))
+            {
+                _byCode[alias] = info;
+            }
         }
     }
 

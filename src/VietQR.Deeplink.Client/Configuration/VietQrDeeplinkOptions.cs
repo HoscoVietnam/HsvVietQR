@@ -24,7 +24,7 @@ public sealed class VietQrDeeplinkOptions
     /// <summary>
     /// Domain dự phòng mặc định khi không kết nối được Discovery.
     /// </summary>
-    public string DefaultGateway { get; set; } = "https://vietqr.hiendev.io.vn";
+    public string DefaultGateway { get; set; } = "https://vietqr.masterpro.vn";
 
     /// <summary>
     /// Bật hoặc tắt tính năng tự động khám phá domain (mặc định bật).

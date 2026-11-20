@@ -258,7 +258,9 @@ imageService.Save(@"D:\vietqr_print.png", payload, new QrRenderOptions
 
 ---
 
-### Cách 4: Giải mã / Kiểm tra chuỗi EMVCo (`VietQrParser`)
+### Cách 4: Giải mã / Kiểm tra chuỗi EMVCo (`VietQrParser` & `VietQrDecoder`)
+
+> **Lưu ý:** Tạo chuỗi EMVCo, phân tích chuỗi (`VietQrParser.Parse`) và vẽ ảnh thẻ QR là **100% Zero-Dependency** (chỉ cần duy nhất `VietQR.Core.Net35.dll`). Riêng tính năng tùy chọn đọc ngược mã QR từ file ảnh (`VietQrDecoder.Decode`) trên .NET 3.5 sẽ tự động nạp `zxing.dll` qua Reflection nếu bạn đặt `zxing.dll` cùng thư mục ứng dụng.
 
 ```csharp
 using VietQR.Core;

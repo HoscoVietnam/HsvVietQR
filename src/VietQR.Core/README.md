@@ -94,10 +94,10 @@ await File.WriteAllBytesAsync("vietqr.png", pngBytes);
 
 | Tên tham số   | Kiểu dữ liệu         |   Bắt buộc   | Mô tả & Ví dụ                                                                                        |
 | :------------ | :------------------- | :----------: | :--------------------------------------------------------------------------------------------------- |
-| `bin`         | `BankBin` / `string` | **Bắt buộc** | Mã BIN ngân hàng đúng 6 chữ số (VD: `"970422"` - MBBank, `"970436"` - VCB, `"970415"` - VietinBank). |
-| `accountNo`   | `string`             | **Bắt buộc** | Số tài khoản, số thẻ hoặc mã tài khoản định danh/ảo (Tối đa 25 ký tự).                               |
+| `bin`         | `BankBin` / `string` | **Bắt buộc** | Mã BIN 6 chữ số hoặc mã/tên viết tắt ngân hàng (VD: `"970422"`, `"MB"`, `"VCB"`, `"CTG"`, `"VIETCOMBANK"`). |
+| `accountNo`   | `string`             | **Bắt buộc** | Số tài khoản, số thẻ hoặc mã tài khoản định danh/ảo (Tối đa 25 byte).                               |
 | `amount`      | `long?`              |   Tùy chọn   | Số tiền thanh toán VNĐ ($> 0$). Bỏ trống (`null`) để tạo **QR tĩnh** (người quét tự gõ số tiền).     |
-| `description` | `string?`            |   Tùy chọn   | Nội dung thanh toán (Tối đa 95 ký tự EMVCo Tag 62.08, tự động loại bỏ dấu tiếng Việt).               |
+| `description` | `string?`            |   Tùy chọn   | Nội dung thanh toán (Tối đa 95 byte EMVCo Tag 62.08, tự động loại bỏ dấu tiếng Việt).               |
 | `serviceType` | `VietQrServiceType`  |   Tùy chọn   | Loại hình chuyển khoản: `Account` (mặc định - QRIBFTTA) hoặc `Card` (QRIBFTTC chuyển qua thẻ).       |
 
 ---

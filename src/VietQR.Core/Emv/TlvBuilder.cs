@@ -12,11 +12,12 @@ public sealed class TlvBuilder
     {
         if (string.IsNullOrEmpty(value)) return this;
 
-        if (value.Length > 99)
-            throw new ArgumentOutOfRangeException(nameof(value), $"TLV tag {tag} vượt 99 ký tự.");
+        int byteLength = Encoding.UTF8.GetByteCount(value);
+        if (byteLength > 99)
+            throw new ArgumentOutOfRangeException(nameof(value), $"TLV tag {tag} vượt 99 byte UTF-8.");
 
         _buffer.Append(tag)
-               .Append(TwoDigitLookup[value.Length])
+               .Append(TwoDigitLookup[byteLength])
                .Append(value);
         return this;
     }

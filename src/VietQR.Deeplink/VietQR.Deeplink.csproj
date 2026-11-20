@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>VietQR.Deeplink</RootNamespace>
+    <AssemblyName>VietQR.Deeplink</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <PackageId>VietQR.Deeplink</PackageId>
+    <Version>1.0.5</Version>
+    <Authors>Ngochiendev</Authors>
+    <Description>Engine điều hướng thông minh VietQR Deeplink (Smart App Bridge &amp; Intent Gateway) hỗ trợ mở 44+ ứng dụng ngân hàng và ví điện tử trên iOS/Android/Desktop.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('..\VietQR.Core\VietQR.Core.csproj')">
+    <ProjectReference Include="..\VietQR.Core\VietQR.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="!Exists('..\VietQR.Core\VietQR.Core.csproj')">
+    <PackageReference Include="VietQR.Core" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('..\VietQR.Deeplink.Client\VietQR.Deeplink.Client.csproj')">
+    <ProjectReference Include="..\VietQR.Deeplink.Client\VietQR.Deeplink.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="!Exists('..\VietQR.Deeplink.Client\VietQR.Deeplink.Client.csproj')">
+    <PackageReference Include="VietQR.Deeplink.Client" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="vietqr_core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\icons\*.png" Link="wwwroot\_content\VietQR.Deeplink\icons\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
+

@@ -90,8 +90,12 @@ public class VietQr : IQrGenerator
     public static string ConvertLength(int length)
     {
         if ((uint)length < 100) return TwoDigitLookup[length];
-        throw new ArgumentOutOfRangeException(nameof(length), $"Độ dài trường TLV ({length}) vượt quá giới hạn tối đa 99 ký tự của chuẩn EMVCo/NAPAS.");
+        throw new ArgumentOutOfRangeException(nameof(length), $"Độ dài trường TLV ({length}) vượt quá giới hạn tối đa 99 byte của chuẩn EMVCo/NAPAS.");
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string ConvertByteLength(string value) =>
+        ConvertLength(Encoding.UTF8.GetByteCount(value));
 
     /// <summary>
     /// Loại bỏ dấu tiếng Việt thành ký tự không dấu chuẩn ngân hàng và lọc ký tự điều khiển (Tối ưu Fast-Path cho chuỗi ASCII)
@@ -135,7 +139,7 @@ public class VietQr : IQrGenerator
         }
 
         var clean = val.ToString();
-        var length = ConvertLength(clean.Length);
+        var length = ConvertByteLength(clean);
         _transactionAmount = $"54{length}{clean}";
 
         // Tự động chuyển thành QR động (Mục 5.2.2)
@@ -145,7 +149,7 @@ public class VietQr : IQrGenerator
 
     /// <summary>
     /// Thiết lập thông tin tổ chức thụ hưởng (Tag 38 - Mục 5.2.3.2):
-    /// - Sub-ID 00: BNB ID / Acquirer ID (Mã BIN ngân hàng - đúng 6 số)
+    /// - Sub-ID 00: BNB ID / Acquirer ID (Mã BIN ngân hàng 6 số hoặc mã/tên viết tắt ngân hàng)
     /// - Sub-ID 01: Consumer ID (Số tài khoản hoặc Số thẻ - tối đa 25 ký tự, hỗ trợ tài khoản định danh/ảo)
     /// - Sub-ID 02: Mã dịch vụ QRIBFTTA (Tài khoản) hoặc QRIBFTTC (Thẻ)
     /// </summary>
@@ -159,23 +163,31 @@ public class VietQr : IQrGenerator
 
         if (acquirerTrimmed.Length != 6 || !acquirerTrimmed.All(char.IsDigit))
         {
-            throw new ArgumentException("Mã ngân hàng (acquirerId / bankBin) bắt buộc phải là đúng 6 chữ số.", nameof(acquirerId));
+            var resolvedBank = EmbeddedBankCatalog.Instance.Find(acquirerTrimmed);
+            if (resolvedBank is not null && !string.IsNullOrEmpty(resolvedBank.Bin) && resolvedBank.Bin.Length == 6 && resolvedBank.Bin.All(char.IsDigit))
+            {
+                acquirerTrimmed = resolvedBank.Bin;
+            }
+            else
+            {
+                throw new ArgumentException("Mã ngân hàng (acquirerId / bankBin) bắt buộc phải là đúng 6 chữ số hoặc mã ngân hàng hợp lệ (VD: 970422, MB, VCB).", nameof(acquirerId));
+            }
         }
 
-        if (string.IsNullOrEmpty(consumerTrimmed) || consumerTrimmed.Length > 25)
+        if (string.IsNullOrEmpty(consumerTrimmed) || Encoding.UTF8.GetByteCount(consumerTrimmed) > 25)
         {
             throw new ArgumentException($"Số tài khoản/thẻ (consumerId / accountNo) không được rỗng và tối đa 25 ký tự theo chuẩn NAPAS / Virtual Account (nhận được: {consumerTrimmed.Length} ký tự).", nameof(consumerId));
         }
 
-        var sub00 = $"00{ConvertLength(acquirerTrimmed.Length)}{acquirerTrimmed}";
-        var sub01 = $"01{ConvertLength(consumerTrimmed.Length)}{consumerTrimmed}";
+        var sub00 = $"00{ConvertByteLength(acquirerTrimmed)}{acquirerTrimmed}";
+        var sub01 = $"01{ConvertByteLength(consumerTrimmed)}{consumerTrimmed}";
         var sub01Total = $"{sub00}{sub01}";
 
-        var beneficiaryOrg = $"01{ConvertLength(sub01Total.Length)}{sub01Total}";
+        var beneficiaryOrg = $"01{ConvertByteLength(sub01Total)}{sub01Total}";
         var serviceCode = serviceType == VietQrServiceType.Card ? ServiceCodeCard : ServiceCodeAccount;
 
         var tag38Value = $"{NapasAid}{beneficiaryOrg}{serviceCode}";
-        _consumerAccountInformation = $"38{ConvertLength(tag38Value.Length)}{tag38Value}";
+        _consumerAccountInformation = $"38{ConvertByteLength(tag38Value)}{tag38Value}";
         return this;
     }
 
@@ -198,9 +210,9 @@ public class VietQr : IQrGenerator
 
     /// <summary>
     /// Thiết lập thông tin bổ sung (Tag 62 - Mục 5.2.14) theo chuẩn NAPAS247:
-    /// - Sub-ID 01: Số hóa đơn (Bill Number - tối đa 25 ký tự)
-    /// - Sub-ID 05: Mã đơn hàng tham chiếu / Order ID (Reference Label - tối đa 25 ký tự)
-    /// - Sub-ID 08: Mục đích giao dịch / Nội dung thanh toán (Purpose - tối đa 25 ký tự theo NAPAS Bảng 8)
+    /// - Sub-ID 01: Số hóa đơn (Bill Number - tối đa 25 byte)
+    /// - Sub-ID 05: Mã đơn hàng tham chiếu / Order ID (Reference Label - tối đa 25 byte)
+    /// - Sub-ID 08: Mục đích giao dịch / Nội dung thanh toán (Purpose - tối đa 95 byte trong khung 99 byte của Tag 62)
     /// </summary>
     public VietQr SetAdditionalData(
         string? purpose = null,
@@ -213,11 +225,17 @@ public class VietQr : IQrGenerator
         {
             if (string.IsNullOrWhiteSpace(val)) return;
             var clean = RemoveDiacritics(val.Trim());
-            int remainingSpace = 99 - innerSb.Length - 4;
+            int currentBytes = Encoding.UTF8.GetByteCount(innerSb.ToString());
+            int remainingSpace = 99 - currentBytes - 4;
             if (remainingSpace <= 0) return;
             int limit = Math.Min(maxLen, remainingSpace);
             if (clean.Length > limit) clean = clean[..limit];
-            innerSb.Append($"{id}{ConvertLength(clean.Length)}{clean}");
+            while (Encoding.UTF8.GetByteCount(clean) > limit && clean.Length > 0)
+            {
+                clean = clean[..^1];
+            }
+            if (clean.Length == 0) return;
+            innerSb.Append($"{id}{ConvertByteLength(clean)}{clean}");
         }
 
         // Sub-tag 01: Bill Number
@@ -235,10 +253,10 @@ public class VietQr : IQrGenerator
         }
 
         // Sub-tag 08: Purpose of Transaction (Nội dung CK)
-        AppendSubTag("08", purpose, 25);
+        AppendSubTag("08", purpose, 95);
 
         var inner = innerSb.ToString();
-        _additionalDataFieldTemplate = inner.Length > 0 ? $"62{ConvertLength(inner.Length)}{inner}" : "";
+        _additionalDataFieldTemplate = inner.Length > 0 ? $"62{ConvertByteLength(inner)}{inner}" : "";
         return this;
     }
 
@@ -254,7 +272,7 @@ public class VietQr : IQrGenerator
         {
             var n = RemoveDiacritics(name.Trim()).ToUpperInvariant();
             if (n.Length > 25) n = n[..25];
-            _merchantName = $"59{ConvertLength(n.Length)}{n}";
+            _merchantName = $"59{ConvertByteLength(n)}{n}";
         }
         else
         {
@@ -265,7 +283,7 @@ public class VietQr : IQrGenerator
         {
             var c = RemoveDiacritics(city.Trim()).ToUpperInvariant();
             if (c.Length > 15) c = c[..15];
-            _merchantCity = $"60{ConvertLength(c.Length)}{c}";
+            _merchantCity = $"60{ConvertByteLength(c)}{c}";
         }
         else
         {

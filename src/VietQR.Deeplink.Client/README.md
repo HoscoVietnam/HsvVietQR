@@ -39,10 +39,10 @@ using VietQR.Deeplink.Client;
 // Cách 1: Sử dụng cấu hình mặc định (Zero-config, chạy ngay không cần tham số)
 builder.Services.AddVietQrDeeplink();
 
-// Cách 2: Tùy biến domain máy chủ hoặc timeout nếu tự host
+// Cách 2: Tùy biến domain máy chủ nội bộ hoặc timeout
 builder.Services.AddVietQrDeeplink(options =>
 {
-    options.BaseUrl = "https://deeplink.example.com";
+    options.BaseUrl = "https://vietqr.masterpro.vn";
     options.TimeoutSeconds = 10;
 });
 ```
@@ -52,7 +52,7 @@ Cấu hình mẫu trong `appsettings.json` (tùy chọn, không bắt buộc):
 ```json
 {
     "Deeplink": {
-        "BaseUrl": "https://deeplink.example.com",
+        "BaseUrl": "https://vietqr.masterpro.vn",
         "TimeoutSeconds": 10
     }
 }
@@ -142,7 +142,7 @@ Mỗi phần tử [`DeeplinkBankAppInfo`](https://github.com/Ngochiendev/vietqr-
             "bin": "970422",
             "shortName": "MBBank",
             "appName": "MB Bank",
-            "logo": "https://deeplink.example.com/icons/mb.png",
+            "logo": "https://vietqr.masterpro.vn/icons/mb.png",
             "supportsAutofill": true,
             "supportsIos": true,
             "supportsAndroid": true
@@ -152,7 +152,7 @@ Mỗi phần tử [`DeeplinkBankAppInfo`](https://github.com/Ngochiendev/vietqr-
             "bin": "970436",
             "shortName": "Vietcombank",
             "appName": "VCB Digibank",
-            "logo": "https://deeplink.example.com/icons/vcb.png",
+            "logo": "https://vietqr.masterpro.vn/icons/vcb.png",
             "supportsAutofill": false,
             "supportsIos": true,
             "supportsAndroid": true
@@ -164,7 +164,7 @@ Mỗi phần tử [`DeeplinkBankAppInfo`](https://github.com/Ngochiendev/vietqr-
 ### Cách 2: Gọi trực tiếp qua HTTP REST API
 
 ```http
-GET https://vietqr.hiendev.io.vn/api/v1/vietqr-core/deeplink/apps
+GET https://vietqr.masterpro.vn/api/v1/vietqr-core/deeplink/apps
 ```
 
 Hệ thống sẽ trả về danh mục ngân hàng kèm logo, mã BIN và cờ `supportsAutofill` (`true` nếu hỗ trợ tự điền dữ liệu, `false` nếu chỉ mở ứng dụng).

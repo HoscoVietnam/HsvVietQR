@@ -18,12 +18,12 @@
     <Description>Thư viện C# (.NET) hỗ trợ tạo chuỗi, đọc mã QR và render ảnh thẻ thanh toán VietQR theo chuẩn NAPAS247 / EMVCo, tích hợp sẵn danh mục ngân hàng Việt Nam.</Description>
     <PackageTags>vietqr;vietqr-core;napas247;emvco;qrcode;payment;banking;csharp;dotnet;skiasharp</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/Ngochiendev/vietqr-core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/HoscoVietnam/HsvVietQR</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://github.com/Ngochiendev/vietqr-core</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/HoscoVietnam/HsvVietQR</PackageProjectUrl>
     <PackageIcon>vietqr_icon.png</PackageIcon>
-    <PackageReleaseNotes>See https://github.com/Ngochiendev/vietqr-core/releases for the latest release notes.</PackageReleaseNotes>
+    <PackageReleaseNotes>See https://github.com/HoscoVietnam/HsvVietQR/releases for the latest release notes.</PackageReleaseNotes>
 
     <!-- SourceLink, Symbols & Deterministic Builds -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

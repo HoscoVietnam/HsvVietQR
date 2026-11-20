@@ -19,7 +19,7 @@ public sealed class VietQrDeeplinkOptions
     /// URL file cấu hình Discovery tĩnh (mặc định từ GitHub repo vietqr-core).
     /// </summary>
     public string DiscoveryUrl { get; set; } =
-        "https://raw.githubusercontent.com/Ngochiendev/vietqr-core/main/vietqr-discovery.json";
+        "https://raw.githubusercontent.com/HoscoVietnam/HsvVietQR/main/vietqr-discovery.json";
 
     /// <summary>
     /// Domain dự phòng mặc định khi không kết nối được Discovery.

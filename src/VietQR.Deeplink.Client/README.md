@@ -2,8 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/VietQR.Deeplink.Client?style=flat-square&color=004880)](https://www.nuget.org/packages/VietQR.Deeplink.Client)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/VietQR.Deeplink.Client?style=flat-square&color=0078D4)](https://www.nuget.org/packages/VietQR.Deeplink.Client)
-[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square)](https://github.com/Ngochiendev/vietqr-core)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/Ngochiendev/vietqr-core/blob/main/LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square)](https://github.com/HoscoVietnam/HsvVietQR)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/HoscoVietnam/HsvVietQR/blob/main/LICENSE)
 
 Thư viện client C# (.NET) kết nối dịch vụ VietQR Deeplink để lấy link mở ứng dụng ngân hàng khi thanh toán bằng mã VietQR, hỗ trợ Dependency Injection trong ASP.NET Core và phương thức mở rộng cho [`VietQR.Core`](https://www.nuget.org/packages/VietQR.Core).
 
@@ -121,7 +121,7 @@ public async Task<IActionResult> GetSupportedApps(CancellationToken ct)
 }
 ```
 
-Mỗi phần tử [`DeeplinkBankAppInfo`](https://github.com/Ngochiendev/vietqr-core/blob/main/src/VietQR.Deeplink.Client/Models/DeeplinkBankAppInfo.cs) trả về gồm:
+Mỗi phần tử [`DeeplinkBankAppInfo`](https://github.com/HoscoVietnam/HsvVietQR/blob/main/src/VietQR.Deeplink.Client/Models/DeeplinkBankAppInfo.cs) trả về gồm:
 
 - `AppCode`: Mã truyền vào hàm tạo link (VD: `"MB"`, `"VCB"`, `"TPB"`, `"MOMO"`).
 - `Bin`: Mã BIN 6 số chuẩn NAPAS (VD: `"970422"`).

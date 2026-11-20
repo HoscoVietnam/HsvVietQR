@@ -2,8 +2,8 @@
 
 [![NuGet](https://img.shields.io/nuget/v/VietQR.Core?style=flat-square&color=004880)](https://www.nuget.org/packages/VietQR.Core)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/VietQR.Core?style=flat-square&color=0078D4)](https://www.nuget.org/packages/VietQR.Core)
-[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square)](https://github.com/Ngochiendev/vietqr-core)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/Ngochiendev/vietqr-core/blob/main/LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square)](https://github.com/HoscoVietnam/HsvVietQR)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/HoscoVietnam/HsvVietQR/blob/main/LICENSE)
 
 Thư viện C# (.NET) hỗ trợ tạo chuỗi, đọc mã QR và render ảnh thẻ thanh toán VietQR theo chuẩn NAPAS247 / EMVCo. Thư viện tích hợp sẵn danh mục ngân hàng Việt Nam, nhúng sẵn logo và font chữ trong DLL để sử dụng trực tiếp mà không phụ thuộc API bên ngoài.
 
@@ -78,12 +78,12 @@ await File.WriteAllBytesAsync("vietqr.png", pngBytes);
 
 |                                                Mẫu 1: `compact` (Mặc định)                                                 |                                        Mẫu 2: `print` (Quầy thu ngân / A4 / A5)                                        |                                       Mẫu 3: `card` (Chuyển tiền qua Thẻ ATM)                                        |
 | :------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
-| ![compact](https://cdn.jsdelivr.net/gh/Ngochiendev/vietqr-core@main/src/VietQR.Core/Resources/examples/vietqr-compact.png) | ![print](https://cdn.jsdelivr.net/gh/Ngochiendev/vietqr-core@main/src/VietQR.Core/Resources/examples/vietqr-print.png) | ![card](https://cdn.jsdelivr.net/gh/Ngochiendev/vietqr-core@main/src/VietQR.Core/Resources/examples/vietqr-card.png) |
+| ![compact](https://cdn.jsdelivr.net/gh/HoscoVietnam/HsvVietQR@main/src/VietQR.Core/Resources/examples/vietqr-compact.png) | ![print](https://cdn.jsdelivr.net/gh/HoscoVietnam/HsvVietQR@main/src/VietQR.Core/Resources/examples/vietqr-print.png) | ![card](https://cdn.jsdelivr.net/gh/HoscoVietnam/HsvVietQR@main/src/VietQR.Core/Resources/examples/vietqr-card.png) |
 |                                  Header VietQR, logo Napas247 & logo ngân hàng nhúng sẵn                                   |                                  In to rõ số tiền, tên chủ TK, nội dung chuyển khoản                                   |                                      Chuyển nhanh qua số thẻ Napas (`QRIBFTTC`)                                      |
 
 |                                            Mẫu 4: `custom_logo` (Logo thương hiệu tâm)                                             |                                          Mẫu 5: `qr_only` (Mã QR vuông tối giản)                                          |
 | :--------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: |
-| ![custom-logo](https://cdn.jsdelivr.net/gh/Ngochiendev/vietqr-core@main/src/VietQR.Core/Resources/examples/vietqr-custom-logo.png) | ![qr-only](https://cdn.jsdelivr.net/gh/Ngochiendev/vietqr-core@main/src/VietQR.Core/Resources/examples/vietqr-qronly.png) |
+| ![custom-logo](https://cdn.jsdelivr.net/gh/HoscoVietnam/HsvVietQR@main/src/VietQR.Core/Resources/examples/vietqr-custom-logo.png) | ![qr-only](https://cdn.jsdelivr.net/gh/HoscoVietnam/HsvVietQR@main/src/VietQR.Core/Resources/examples/vietqr-qronly.png) |
 |                                      Chèn logo doanh nghiệp ở tâm, giữ mã QR chuẩn đen trắng                                       |                                   Vuông tối giản (`Size = 500`), có icon VietQR ở giữa                                    |
 
 ---
@@ -221,5 +221,5 @@ app.MapGet("/api/qr", async (IQrGenerator generator, IQrImageRenderer renderer) 
 
 ## 📄 Bản Quyền & Giấy Phép
 
-- Phát hành theo giấy phép mã nguồn mở **[MIT License](https://github.com/Ngochiendev/vietqr-core/blob/main/LICENSE)** — Hoàn toàn miễn phí cho cả dự án cá nhân và thương mại.
+- Phát hành theo giấy phép mã nguồn mở **[MIT License](https://github.com/HoscoVietnam/HsvVietQR/blob/main/LICENSE)** — Hoàn toàn miễn phí cho cả dự án cá nhân và thương mại.
 - _VietQR® và NAPAS247® là nhãn hiệu thuộc sở hữu của NAPAS. Dự án này là thư viện mã nguồn mở độc lập._

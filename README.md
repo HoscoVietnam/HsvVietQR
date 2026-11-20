@@ -36,13 +36,13 @@ flowchart TB
         DlEngine["src/VietQR.Deeplink<br/>(Smart DeepLink Bridge /p/{token} & 44+ App Catalog)"]
     end
 
-    Win35 -->|Add Reference .dll| Core35
-    NetApp -->|ProjectRef / Package| CoreModern
-    NetApp -->|Tạo link mở App NH| DlClient
-    OtherApp -->|HTTP REST API| Api
-    DlClient -->|POST /v1/intents| DlEngine
-    Api -->|In-Process (HAS_VIETQR_DEEPLINK)| DlEngine
-    Api -->|In-Process| CoreModern
+    Win35 -->|"Add Reference .dll"| Core35
+    NetApp -->|"ProjectRef / Package"| CoreModern
+    NetApp -->|"Tạo link mở App NH"| DlClient
+    OtherApp -->|"HTTP REST API"| Api
+    DlClient -->|"POST /v1/intents"| DlEngine
+    Api -->|"In-Process (HAS_VIETQR_DEEPLINK)"| DlEngine
+    Api -->|"In-Process"| CoreModern
 ```
 
 ### Bảng Chọn Nhanh Module Tích Hợp (Decision Matrix)
